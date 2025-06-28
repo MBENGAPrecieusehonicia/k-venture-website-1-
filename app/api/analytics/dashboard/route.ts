@@ -1,50 +1,37 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import prisma from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
     // Vérifier l'authentification (à implémenter selon vos besoins)
     const authHeader = request.headers.get("authorization")
-    // Vérifie la présence de l'en-tête et de la variable d'environnement
     if (!authHeader || !authHeader.startsWith("Bearer ") || !process.env.ANALYTICS_API_SECRET) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 })
     }
-
-    // Extrait et valide le jeton
     const token = authHeader.split(" ")[1]
     if (token !== process.env.ANALYTICS_API_SECRET) {
-      return NextResponse.json({ error: "Jeton invalide" }, { status: 403 }) // 403 Forbidden est plus approprié pour un jeton invalide
+      return NextResponse.json({ error: "Jeton invalide" }, { status: 403 })
     }
 
-    // Obtenir les métriques du dashboard
-    const { data: metrics, error } = await supabase.rpc("get_dashboard_metrics")
+    // Récupérer les métriques réelles
+    const total_newsletters = await prisma.newsletter.count({ where: { status: "active" } })
+    const total_contacts = await prisma.contactRequest.count()
+    const total_ebooks = await prisma.ebookDownload.count()
+    // Exemples de stats supplémentaires
+    const newsletters = await prisma.newsletter.findMany({ where: { status: "active" } })
+    const contacts = await prisma.contactRequest.findMany()
+    const ebooks = await prisma.ebookDownload.findMany()
 
-    if (error) {
-      console.error("Erreur métriques dashboard:", error)
-      return NextResponse.json({ error: "Erreur lors de la récupération des métriques" }, { status: 500 })
-    }
-
-    // Métriques en temps réel
-    const today = new Date().toISOString().split("T")[0]
-
-    const { data: todayStats, error: todayError } = await supabase
-      .from("analytics_conversions")
-      .select("conversion_type, count")
-      .eq("date", today)
-
-    if (todayError) {
-      console.error("Erreur stats du jour:", todayError)
-    }
-
-    const response = {
-      ...metrics,
-      today_stats: todayStats || [],
-      last_updated: new Date().toISOString(),
-    }
-
-    return NextResponse.json(response)
+    return NextResponse.json({
+      total_newsletters,
+      total_contacts,
+      total_ebooks,
+      newsletters,
+      contacts,
+      ebooks,
+    })
   } catch (error) {
-    console.error("Erreur API analytics:", error)
+    console.error("Erreur API analytics dashboard:", error)
     return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 })
   }
 }

@@ -9,7 +9,11 @@ import { CheckCircle, AlertCircle, Loader2, Send } from "lucide-react"
 import { trackingEvents } from "@/lib/analytics"
 import { useFormTracking } from "@/hooks/use-analytics"
 
-export default function ContactForm() {
+interface ContactFormProps {
+  onSuccess?: (contactData: any) => void
+}
+
+export default function ContactForm({ onSuccess }: ContactFormProps) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -44,6 +48,9 @@ export default function ContactForm() {
       if (result.success) {
         setStatus("success")
         setMessage(result.message)
+        if (onSuccess && result.data) {
+          onSuccess(result.data)
+        }
 
         // Track successful contact form submission
         trackFormSuccess()

@@ -1,7 +1,5 @@
-// Service d'envoi d'emails avec Resend (recommandé) ou nodemailer
-import { Resend } from "resend"
-
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Service d'envoi d'emails avec nodemailer
+import nodemailer from "nodemailer"
 
 export interface EmailData {
   to: string
@@ -13,19 +11,24 @@ export interface EmailData {
 export class EmailService {
   static async sendEmail({ to, subject, html, from = "K-Venture <fabriqueecole241@gmail.com>" }: EmailData) {
     try {
-      const { data, error } = await resend.emails.send({
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT) || 465,
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      })
+
+      const info = await transporter.sendMail({
         from,
         to,
         subject,
         html,
       })
 
-      if (error) {
-        console.error("Erreur envoi email:", error)
-        return { success: false, error }
-      }
-
-      return { success: true, data }
+      return { success: true, data: info }
     } catch (error) {
       console.error("Erreur service email:", error)
       return { success: false, error }

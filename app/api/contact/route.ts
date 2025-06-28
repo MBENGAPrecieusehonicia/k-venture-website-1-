@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
 import { EmailService } from "@/lib/email-service"
-import type { ContactRequest } from "@/lib/supabase"
+import prisma from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,24 +16,52 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Adresse email invalide" }, { status: 400 })
     }
 
-    // Créer la demande de contact
-    const contactData: ContactRequest = {
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      phone,
-      company,
-      position,
-      subject,
-      message,
-      status: "new",
+    // Vérifier ou créer l'entrée newsletter pour respecter la contrainte de clé étrangère
+    let newsletter = await prisma.newsletter.findUnique({ where: { email } })
+    if (!newsletter) {
+      newsletter = await prisma.newsletter.create({
+        data: { email, status: "active" },
+      })
     }
 
-    const { data, error } = await supabase.from("contact_requests").insert([contactData]).select().single()
-
-    if (error) {
-      console.error("Erreur insertion contact:", error)
+    // Enregistrer la demande de contact
+    let contact
+    try {
+      contact = await prisma.contactRequest.create({
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone,
+          company,
+          position,
+          subject,
+          message,
+        },
+      })
+    } catch (dbError) {
+      console.error("Erreur insertion contact:", dbError)
       return NextResponse.json({ error: "Erreur lors de l'envoi de votre demande" }, { status: 500 })
+    }
+
+    // Envoyer l'email au contact principal de l'entreprise
+    try {
+      await EmailService.sendEmail({
+        to: "Buhlehonicia@gmail.com", // email de contact de l'entreprise
+        subject: `📩 Nouvelle demande de contact de ${firstName} ${lastName}`,
+        html: `
+          <h2>Nouvelle demande de contact reçue</h2>
+          <p><b>Nom :</b> ${firstName} ${lastName}</p>
+          <p><b>Email :</b> ${email}</p>
+          <p><b>Téléphone :</b> ${phone || "-"}</p>
+          <p><b>Entreprise :</b> ${company || "-"}</p>
+          <p><b>Poste :</b> ${position || "-"}</p>
+          <p><b>Sujet :</b> ${subject}</p>
+          <p><b>Message :</b><br/>${message}</p>
+        `,
+      })
+    } catch (emailError) {
+      console.error("Erreur envoi email contact entreprise:", emailError)
     }
 
     // Envoyer l'email de confirmation au client
@@ -48,34 +75,10 @@ export async function POST(request: NextRequest) {
       console.error("Erreur envoi email confirmation:", emailError)
     }
 
-    // Envoyer une notification à l'équipe K-Venture
-    try {
-      await EmailService.sendEmail({
-        to: "fabriqueecole241@gmail.com",
-        subject: `🔔 Nouvelle demande de contact - ${subject}`,
-        html: `
-          <h2>Nouvelle demande de contact</h2>
-          <p><strong>Nom :</strong> ${firstName} ${lastName}</p>
-          <p><strong>Email :</strong> ${email}</p>
-          <p><strong>Téléphone :</strong> ${phone || "Non renseigné"}</p>
-          <p><strong>Entreprise :</strong> ${company || "Non renseignée"}</p>
-          <p><strong>Fonction :</strong> ${position || "Non renseignée"}</p>
-          <p><strong>Sujet :</strong> ${subject}</p>
-          <p><strong>Message :</strong></p>
-          <div style="background: #f5f5f5; padding: 15px; border-radius: 5px;">
-            ${message.replace(/\n/g, "<br>")}
-          </div>
-          <p><em>Demande reçue le ${new Date().toLocaleString("fr-FR")}</em></p>
-        `,
-      })
-    } catch (emailError) {
-      console.error("Erreur envoi notification équipe:", emailError)
-    }
-
     return NextResponse.json({
       success: true,
-      message: "Votre demande a été envoyée avec succès ! Nous vous recontacterons sous 24h.",
-      data,
+      message: "Votre demande a bien été envoyée. Nous vous contacterons sous 24h.",
+      data: contact,
     })
   } catch (error) {
     console.error("Erreur API contact:", error)

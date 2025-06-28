@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Mail, Linkedin, Twitter, Instagram, Clock, Users } from "lucide-react"
 import ContactForm from "@/components/forms/contact-form"
@@ -8,6 +8,7 @@ import Image from "next/image"
 
 export default function ContactPage() {
   const contactRef = useRef<HTMLElement>(null)
+  const [lastContact, setLastContact] = useState<any>(null)
 
   useEffect(() => {
     const observerOptions = {
@@ -28,6 +29,11 @@ export default function ContactPage() {
 
     return () => observer.disconnect()
   }, [])
+
+  // Ajout d'un callback pour récupérer les infos du dernier contact soumis
+  const handleContactSuccess = (contactData: any) => {
+    setLastContact(contactData)
+  }
 
   return (
     <div className="min-h-screen pt-20 overflow-hidden">
@@ -76,7 +82,20 @@ export default function ContactPage() {
 
               <Card className="shadow-2xl border-0 animate-fade-in-up delay-300">
                 <CardContent className="p-10">
-                  <ContactForm />
+                  <ContactForm onSuccess={handleContactSuccess} />
+                  {lastContact && (
+                    <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
+                      <div className="font-bold mb-2">Dernier contact enregistré :</div>
+                      <div>Prénom : {lastContact.first_name}</div>
+                      <div>Nom : {lastContact.last_name}</div>
+                      <div>Email : {lastContact.email}</div>
+                      <div>Téléphone : {lastContact.phone || "-"}</div>
+                      <div>Entreprise : {lastContact.company || "-"}</div>
+                      <div>Poste : {lastContact.position || "-"}</div>
+                      <div>Sujet : {lastContact.subject}</div>
+                      <div>Message : {lastContact.message}</div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>

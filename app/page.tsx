@@ -8,7 +8,8 @@ import Image from "next/image"
 import Link from "next/link"
 
 export default function HomePage() {
-  const heroRef = useRef<HTMLElement>(null)
+  // Utiliser des refs typés pour correspondre à l'élément DOM ciblé
+  const heroRef = useRef<HTMLDivElement>(null)
   const servicesRef = useRef<HTMLElement>(null)
   const clientsRef = useRef<HTMLElement>(null)
 

@@ -44,7 +44,6 @@ export const trackEvent = (action: string, category: string, label?: string, val
   })
 }
 
-// Événements spécifiques au coaching
 export const trackingEvents = {
   // Formulaires et conversions
   newsletterSignup: (source: string) => {
@@ -131,6 +130,8 @@ export const trackingEvents = {
   emailClick: () => {
     trackEvent("email_click", "contact", "header_email")
   },
+
+  trackEvent,
 }
 
 // Tracking des performances de page
