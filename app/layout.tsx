@@ -69,13 +69,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
-      <head>
-        <link rel="icon" href="/images/k-venture-logo.jpeg" />
-        <link rel="apple-touch-icon" href="/images/k-venture-logo.jpeg" />
-        <meta name="theme-color" content="#2E7D32" />
-      </head>
       <body className={inter.className}>
         <Suspense fallback={<div>Loading...</div>}>
+          {/* La balise <head> est gérée par Next.js, les métadonnées ci-dessus suffisent */}
           <AnalyticsProvider>
             <Header />
             <main>{children}</main>

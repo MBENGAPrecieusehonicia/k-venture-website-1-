@@ -29,12 +29,20 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Copier les fichiers de build depuis l'étape 'builder'
+# On a besoin du schema prisma pour lancer les migrations
+COPY --from=builder /app/prisma ./prisma
+# On a besoin de package.json et pnpm-lock.yaml pour que pnpm trouve la dépendance prisma
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
 # Utiliser un utilisateur non-root pour la production pour plus de sécurité
 USER node
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["./entrypoint.sh"]
