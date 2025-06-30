@@ -20,6 +20,9 @@ COPY . .
 
 RUN pnpm prisma generate
 
+# Lancer les migrations de la base de données ici, pendant le build
+RUN pnpm prisma migrate deploy
+
 RUN pnpm build
 
 # Étape 3: Image finale de production
@@ -38,11 +41,9 @@ COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
-COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
-RUN chmod +x ./entrypoint.sh
 
 # Utiliser un utilisateur non-root pour la production pour plus de sécurité
 USER node
 
 EXPOSE 3000
-CMD ["./entrypoint.sh"]
+CMD ["pnpm", "start"]
