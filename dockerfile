@@ -6,8 +6,9 @@ WORKDIR /app
 RUN npm install -g pnpm
 
 # Copier les fichiers de dépendances
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml .npmrc ./
 
+# Le .npmrc est utilisé par pnpm pour autoriser les scripts de build
 # Installer TOUTES les dépendances (dev et prod) nécessaires pour le build
 RUN pnpm install --frozen-lockfile
 
@@ -31,9 +32,6 @@ ENV DIRECT_URL=$DIRECT_URL
 # Lancer les migrations de la base de données ici, pendant le build
 RUN pnpm prisma migrate deploy
 
-# Lancer les migrations de la base de données ici, pendant le build
-RUN pnpm prisma migrate deploy
-
 RUN pnpm build
 
 # Étape 3: Image finale de production
@@ -42,13 +40,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copier les fichiers de build depuis l'étape 'builder'
-# On a besoin du schema prisma pour lancer les migrations
-COPY --from=builder /app/prisma ./prisma
-# On a besoin de package.json et pnpm-lock.yaml pour que pnpm trouve la dépendance prisma
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-
+# Copier uniquement les fichiers nécessaires à l'exécution depuis le builder
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=node:node /app/.next/standalone ./
 COPY --from=builder --chown=node:node /app/.next/static ./.next/static
@@ -57,5 +49,6 @@ COPY --from=builder --chown=node:node /app/.next/static ./.next/static
 USER node
 
 EXPOSE 3000
-CMD ["pnpm", "start"]
 
+# server.js est le point d'entrée créé par le build standalone de Next.js
+CMD ["pnpm", "dev"]
