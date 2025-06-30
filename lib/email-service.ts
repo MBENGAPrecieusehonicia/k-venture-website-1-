@@ -135,7 +135,7 @@ export class EmailService {
   }
 
   // Template pour téléchargement e-book
-  static getEbookDownloadTemplate(firstName: string) {
+  static getEbookDownloadTemplate(firstName: string, downloadUrl: string) {
     return `
       <!DOCTYPE html>
       <html>
@@ -174,7 +174,7 @@ export class EmailService {
               </div>
 
               <div style="text-align: center;">
-                <a href="#" class="download-button">📥 Télécharger l'e-book (PDF)</a>
+                <a href="${downloadUrl}" class="download-button">📥 Télécharger l'e-book (PDF)</a>
               </div>
 
               <p><strong>💡 Conseil :</strong> Imprimez les pages d'exercices pour une meilleure expérience d'apprentissage !</p>

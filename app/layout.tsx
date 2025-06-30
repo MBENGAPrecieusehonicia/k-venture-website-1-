@@ -59,7 +59,6 @@ export const metadata: Metadata = {
     icon: "/images/k-venture-logo.jpeg",
     apple: "/images/k-venture-logo.jpeg",
   },
-    
 }
 
 export default function RootLayout({

@@ -47,12 +47,16 @@ export async function POST(request: NextRequest) {
       console.error("Erreur ajout newsletter:", newsletterError)
     }
 
+    const ebookFileName = "guide-du-leadership-transformationnel.pdf";
+    // Assurez-vous d'avoir NEXT_PUBLIC_BASE_URL dans vos variables d'environnement sur Render
+    const downloadUrl = `api/download-ebook/${ebookFileName}`;
+
     // Envoyer l'email avec le lien de téléchargement
     try {
       await EmailService.sendEmail({
         to: email,
         subject: '📚 Votre e-book "Guide du Leadership Transformationnel" est prêt !',
-        html: EmailService.getEbookDownloadTemplate(firstName),
+        html: EmailService.getEbookDownloadTemplate(firstName, downloadUrl),
       })
     } catch (emailError) {
       console.error("Erreur envoi email ebook:", emailError)
@@ -62,7 +66,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "E-book envoyé ! Vérifiez votre boîte mail.",
-      downloadUrl: "/maitrise-de-soi.pdf",
+      downloadUrl: `/maitrise-de-soi.pdf`,
       data: ebookDownload,
     })
   } catch (error) {
