@@ -20,6 +20,17 @@ COPY . .
 
 RUN pnpm prisma generate
 
+# Acceptez les URLs comme des arguments de build
+ARG DATABASE_URL
+ARG DIRECT_URL
+
+# Exposez-les comme des variables d'environnement pour les commandes RUN suivantes
+ENV DATABASE_URL=$DATABASE_URL
+ENV DIRECT_URL=$DIRECT_URL
+
+# Lancer les migrations de la base de données ici, pendant le build
+RUN pnpm prisma migrate deploy
+
 # Lancer les migrations de la base de données ici, pendant le build
 RUN pnpm prisma migrate deploy
 
@@ -47,3 +58,4 @@ USER node
 
 EXPOSE 3000
 CMD ["pnpm", "start"]
+
