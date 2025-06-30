@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "E-book envoyé ! Vérifiez votre boîte mail.",
-      downloadUrl: "https://www.promethee-devperso.com/wp-content/uploads/2011/10/La-ma%C3%AEtrise-de-soi-m%C3%AAme-%C3%89mile-Cou%C3%A9.pdf",
+      downloadUrl: "/maitrise-de-soi.pdf",
       data: ebookDownload,
     })
   } catch (error) {

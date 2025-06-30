@@ -149,27 +149,23 @@ export default function AboutPage() {
             <div className="order-1 lg:order-2 animate-on-scroll">
               <div className="relative group">
                 <div className="relative overflow-hidden rounded-2xl shadow-2xl group-hover:shadow-3xl transition-all duration-500">
-                  <Image
-                    src="/CC.jpeg?height=600&width=500"
-                    alt="Sylvère Boussamba, Coach certifié John C. Maxwell"
-                    width={500}
-                    height={600}
-                    className="w-full h-auto group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-green-600 via-transparent to-transparent opacity-20 group-hover:opacity-30 transition-opacity duration-500"></div>
+                  <Image src="/CC.jpeg?height=600&width=500" alt="Sylvère Boussamba, Coach certifié John C. Maxwell" width={500} height={600} className="w-full h-auto group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-green-600 via-transparent to-transparent opacity-20 group-hover:opacity-30 transition-opacity duration-500">
+
+                  </div>
                 </div>
 
-                {/* Video Placeholder with Enhanced Design */}
-                <div className="mt-8 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer">
-                  <div className="relative inline-block">
-                    <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-green-700 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                      <Play className="h-8 w-8 text-white ml-1" />
-                    </div>
-                    <div className="absolute inset-0 rounded-full border-4 border-green-300 opacity-0 group-hover:opacity-100 animate-ping transition-opacity duration-300"></div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mt-4 mb-2">Vidéo de présentation</h3>
-                  <p className="text-sm text-gray-600">Découvrez la vision de Sylvère (30s)</p>
+                <div className="relative overflow-hidden rounded-2xl shadow-2xl group-hover:shadow-3xl transition-all duration-500 mt-4">
+                  <iframe
+                    className="w-full aspect-[9/16]"
+                    src="https://www.youtube.com/embed/XdmWNQ7AOVI"
+                    title="Présentation de Sylvère Boussamba - Coach Certifié"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  ></iframe>
                 </div>
+
               </div>
             </div>
           </div>

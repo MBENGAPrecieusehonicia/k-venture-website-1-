@@ -51,6 +51,14 @@ export default function EbookForm({
         setMessage(result.message)
         setDownloadUrl(result.downloadUrl)
 
+        // Déclencher le téléchargement automatiquement
+        const link = document.createElement("a")
+        link.href = result.downloadUrl
+        link.setAttribute("download", "maitrise-de-soi.pdf")
+        document.body.appendChild(link)
+        link.click()
+        link.parentNode?.removeChild(link)
+
         // Track successful ebook download
         trackFormSuccess()
         trackingEvents.ebookDownload(ebookTitle)
@@ -91,7 +99,7 @@ export default function EbookForm({
         <p className="text-green-700 mb-4">{message}</p>
         {downloadUrl && (
           <Button asChild className="bg-green-600 hover:bg-green-700 text-white mb-4" onClick={handleDownloadClick}>
-            <a href={downloadUrl} download>
+            <a href={downloadUrl} download="maitrise-de-soi.pdf">
               <Download className="mr-2 h-4 w-4" />
               Télécharger maintenant
             </a>

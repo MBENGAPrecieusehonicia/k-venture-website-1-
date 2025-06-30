@@ -6,9 +6,20 @@ import { MapPin, Phone, Mail, Linkedin, Twitter, Instagram, Clock, Users } from 
 import ContactForm from "@/components/forms/contact-form"
 import Image from "next/image"
 
+interface LastContactData {
+  first_name: string
+  last_name: string
+  email: string
+  phone?: string
+  company?: string
+  position?: string
+  subject: string
+  message: string
+}
+
 export default function ContactPage() {
   const contactRef = useRef<HTMLElement>(null)
-  const [lastContact, setLastContact] = useState<any>(null)
+  const [lastContact, setLastContact] = useState<LastContactData | null>(null)
 
   useEffect(() => {
     const observerOptions = {
@@ -31,7 +42,7 @@ export default function ContactPage() {
   }, [])
 
   // Ajout d'un callback pour récupérer les infos du dernier contact soumis
-  const handleContactSuccess = (contactData: any) => {
+  const handleContactSuccess = (contactData: LastContactData) => {
     setLastContact(contactData)
   }
 
@@ -83,7 +94,7 @@ export default function ContactPage() {
               <Card className="shadow-2xl border-0 animate-fade-in-up delay-300">
                 <CardContent className="p-10">
                   <ContactForm onSuccess={handleContactSuccess} />
-                  {lastContact && (
+                  {process.env.NODE_ENV === "development" && lastContact && (
                     <div className="mt-8 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
                       <div className="font-bold mb-2">Dernier contact enregistré :</div>
                       <div>Prénom : {lastContact.first_name}</div>
@@ -161,19 +172,28 @@ export default function ContactPage() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Suivez-nous</h3>
                 <div className="flex space-x-4">
                   <a
-                    href="#"
+                    href="https://linkedin.com/company/k-venture"
+                    aria-label="LinkedIn de K-Venture"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl flex items-center justify-center text-white hover:from-green-700 hover:to-green-800 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-xl"
                   >
                     <Linkedin className="h-7 w-7 group-hover:scale-110 transition-transform duration-300" />
                   </a>
                   <a
-                    href="#"
+                    href="https://twitter.com/k-venture"
+                    aria-label="Twitter de K-Venture"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl flex items-center justify-center text-white hover:from-green-700 hover:to-green-800 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-xl"
                   >
                     <Twitter className="h-7 w-7 group-hover:scale-110 transition-transform duration-300" />
                   </a>
                   <a
-                    href="#"
+                    href="https://instagram.com/k-venture"
+                    aria-label="Instagram de K-Venture"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group w-14 h-14 bg-gradient-to-br from-green-600 to-green-700 rounded-2xl flex items-center justify-center text-white hover:from-green-700 hover:to-green-800 transition-all duration-300 hover:scale-110 shadow-lg hover:shadow-xl"
                   >
                     <Instagram className="h-7 w-7 group-hover:scale-110 transition-transform duration-300" />
@@ -225,15 +245,17 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl h-96 flex items-center justify-center shadow-xl animate-on-scroll">
-            <div className="text-center">
-              <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <MapPin className="h-10 w-10 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">Carte Google Maps</h3>
-              <p className="text-gray-600">Libreville, Gabon</p>
-              <p className="text-sm text-gray-500 mt-2">Intégration Google Maps à venir</p>
-            </div>
+          <div className="rounded-2xl h-96 overflow-hidden shadow-xl animate-on-scroll">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7118198640155!2d9.4504308!3d0.4186372!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x107f3b85ff34afc1%3A0xfa0291b2c915010d!2sEcole%20241!5e0!3m2!1sfr!2sga!4v1751292211941!5m2!1sfr!2sga"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Carte de K-Venture sur Google Maps"
+            ></iframe>
           </div>
         </div>
       </section>
