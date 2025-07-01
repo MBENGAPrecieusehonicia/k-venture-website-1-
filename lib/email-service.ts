@@ -68,7 +68,7 @@ export class EmailService {
                 <li>🎪 Nos invitations exclusives aux événements</li>
               </ul>
               <p>En attendant, découvrez nos services de coaching transformationnel :</p>
-              <a href="https://k-venture.com/services" class="button">Découvrir nos services</a>
+              <a href="https://k-venture.onrender.com/services" class="button">Découvrir nos services</a>
               <p>À très bientôt,<br><strong>L'équipe K-Venture</strong></p>
             </div>
             <div class="footer">
@@ -118,9 +118,9 @@ export class EmailService {
               </div>
               <p>En attendant, n'hésitez pas à :</p>
               <ul>
-                <li>📖 Consulter nos <a href="https://k-venture.com/blog">articles de blog</a></li>
+                <li>📖 Consulter nos <a href="https://k-venture.onrender.com/blog">articles de blog</a></li>
                 <li>📱 Nous suivre sur <a href="#">LinkedIn</a></li>
-                <li>📧 Télécharger notre <a href="https://k-venture.com/blog">e-book gratuit</a></li>
+                <li>📧 Télécharger notre <a href="https://k-venture.onrender.com/blog">e-book gratuit</a></li>
               </ul>
               <p>À très bientôt,<br><strong>Sylvère Boussamba</strong><br>Coach Certifié John C. Maxwell</p>
             </div>
@@ -181,7 +181,7 @@ export class EmailService {
               
               <p>Besoin d'un accompagnement personnalisé ? Réservez votre consultation gratuite de 30 minutes :</p>
               <p style="text-align: center;">
-                <a href="https://k-venture.com/contact" style="color: #2E7D32; font-weight: bold;">📅 Réserver ma consultation gratuite</a>
+                <a href="https://k-venture.onrender.com/contact" style="color: #2E7D32; font-weight: bold;">📅 Réserver ma consultation gratuite</a>
               </p>
 
               <p>Excellente lecture !<br><strong>Sylvère Boussamba</strong></p>

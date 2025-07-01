@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://k-venture.com",
+    url: "https://k-venture.onrender.com",
     siteName: "K-Venture",
     title: "K-Venture - Coaching Transformationnel au Gabon",
     description:
